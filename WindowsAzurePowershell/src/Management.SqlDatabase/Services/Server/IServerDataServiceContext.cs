@@ -12,6 +12,7 @@
 // limitations under the License.
 // ----------------------------------------------------------------------------------
 
+using System.Management.Automation;
 namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
 {
     /// <summary>
@@ -47,14 +48,14 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
         /// Retrieves the list of all databases on the server.
         /// </summary>
         /// <returns>An array of all databases on the server.</returns>
-        Database[] GetDatabases();
+        Database[] GetDatabases(Cmdlet cmdlet);
 
         /// <summary>
         /// Retrieve information on database with the name <paramref name="databaseName"/>.
         /// </summary>
         /// <param name="databaseName">The database to retrieve.</param>
         /// <returns>An object containing the information about the specific database.</returns>
-        Database GetDatabase(string databaseName);
+        Database GetDatabase(string databaseName, Cmdlet cmdlet);
 
         /// <summary>
         /// Creates a new Sql Database.
@@ -68,7 +69,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
             string databaseName,
             int? databaseMaxSize,
             string databaseCollation,
-            DatabaseEdition databaseEdition);
+            DatabaseEdition databaseEdition, Cmdlet cmdlet);
 
         /// <summary>
         /// Updates the property on the database with the name <paramref name="databaseName"/>.
@@ -92,13 +93,13 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
             string newDatabaseName,
             int? databaseMaxSize,
             DatabaseEdition? databaseEdition,
-            ServiceObjective serviceObjective);
+            ServiceObjective serviceObjective, Cmdlet cmdlet);
 
         /// <summary>
         /// Removes the database with the name <paramref name="databaseName"/>.
         /// </summary>
         /// <param name="databaseName">The database to remove.</param>
-        void RemoveDatabase(string databaseName);
+        void RemoveDatabase(string databaseName, Cmdlet cmdlet);
 
         #endregion
 

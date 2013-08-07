@@ -207,7 +207,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Database.Cmdlet
                 clientRequestId = context.ClientRequestId;
 
                 // Remove the database with the specified name
-                context.RemoveDatabase(databaseName);
+                context.RemoveDatabase(databaseName, this);
             }
             catch (Exception ex)
             {
@@ -227,7 +227,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Database.Cmdlet
             try
             {
                 // Remove the database with the specified name
-                this.ConnectionContext.RemoveDatabase(databaseName);
+                this.ConnectionContext.RemoveDatabase(databaseName, this);
             }
             catch (Exception ex)
             {

@@ -192,7 +192,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Test.UnitTests.Database.
                 contextCmdlet.GetServerDataServiceByCertAuth("TestServer", subscriptionData);
             service.Channel = channel;
 
-            Database database = service.UpdateDatabase("testdb1", "testdb1", 5, null, null);
+            Database database = service.UpdateDatabase("testdb1", "testdb1", 5, null, null, null);
 
             Assert.AreEqual(
                 database.CollationName, 
@@ -449,7 +449,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Test.UnitTests.Database.
                 contextCmdlet.GetServerDataServiceByCertAuth("TestServer", subscriptionData);
             service.Channel = channel;
 
-            Database database = service.UpdateDatabase("testdb1", "newTestDb1", null, null, null);
+            Database database = service.UpdateDatabase("testdb1", "newTestDb1", null, null, null, null);
 
             Assert.AreEqual(
                 database.CollationName, 

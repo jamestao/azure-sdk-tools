@@ -147,12 +147,12 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Database.Cmdlet
                 if (databaseName != null)
                 {
                     // Retrieve the database with the specified name
-                    this.WriteObject(context.GetDatabase(databaseName));
+                    this.WriteObject(context.GetDatabase(databaseName, this));
                 }
                 else
                 {
                     // No name specified, retrieve all databases in the server
-                    this.WriteObject(context.GetDatabases());
+                    this.WriteObject(context.GetDatabases(this));
                 }
             }
             catch (Exception ex)
@@ -175,12 +175,12 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Database.Cmdlet
                 if (databaseName != null)
                 {
                     // Retrieve the database with the specified name
-                    this.WriteObject(this.ConnectionContext.GetDatabase(databaseName));
+                    this.WriteObject(this.ConnectionContext.GetDatabase(databaseName, this));
                 }
                 else
                 {
                     // No name specified, retrieve all databases in the server
-                    this.WriteObject(this.ConnectionContext.GetDatabases(), true);
+                    this.WriteObject(this.ConnectionContext.GetDatabases(this), true);
                 }
             }
             catch (Exception ex)

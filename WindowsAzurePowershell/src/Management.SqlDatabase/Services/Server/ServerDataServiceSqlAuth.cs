@@ -19,6 +19,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
     using System.Data.Services.Client;
     using System.Globalization;
     using System.Linq;
+    using System.Management.Automation;
     using System.Net;
     using System.Xml.Linq;
     using Microsoft.WindowsAzure.Management.SqlDatabase.Properties;
@@ -272,7 +273,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
             string databaseName,
             int? databaseMaxSize,
             string databaseCollation,
-            DatabaseEdition databaseEdition)
+            DatabaseEdition databaseEdition, Cmdlet cmdlet)
         {
             // Create a new request Id for this operation
             this.clientRequestId = SqlDatabaseManagementHelper.GenerateClientTracingId();
@@ -325,7 +326,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
         /// Retrieves the list of all databases on the server.
         /// </summary>
         /// <returns>An array of all databases on the server.</returns>
-        public Database[] GetDatabases()
+        public Database[] GetDatabases(Cmdlet cmdlet)
         {
             Database[] allDatabases = null;
 
@@ -348,7 +349,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
         /// </summary>
         /// <param name="databaseName">The database to retrieve.</param>
         /// <returns>An object containing the information about the specific database.</returns>
-        public Database GetDatabase(string databaseName)
+        public Database GetDatabase(string databaseName, Cmdlet cmdlet)
         {
             Database database;
 
@@ -395,10 +396,10 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
             string newDatabaseName,
             int? databaseMaxSize,
             DatabaseEdition? databaseEdition,
-            ServiceObjective serviceObjective)
+            ServiceObjective serviceObjective, Cmdlet cmdlet)
         {
             // Find the database by name
-            Database database = GetDatabase(databaseName);
+            Database database = GetDatabase(databaseName, cmdlet);
 
             // Update the name if specified
             if (newDatabaseName != null)
@@ -430,17 +431,17 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
                 throw;
             }
 
-            return this.GetDatabase(database.Name);
+            return this.GetDatabase(database.Name, cmdlet);
         }
 
         /// <summary>
         /// Removes the database with the name <paramref name="databaseName"/>.
         /// </summary>
         /// <param name="databaseName">The database to remove.</param>
-        public void RemoveDatabase(string databaseName)
+        public void RemoveDatabase(string databaseName, Cmdlet cmdlet)
         {
             // Find the database by name
-            Database database = GetDatabase(databaseName);
+            Database database = GetDatabase(databaseName, cmdlet);
 
             // Mark the object for delete and submit the changes
             this.DeleteObject(database);

@@ -107,7 +107,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Test.UnitTests.Database.
             service.Channel = channel;
 
             Database result = 
-                service.CreateNewDatabase("UnitTestNewDatabase", 1, "Japanese_CI_AS", DatabaseEdition.Web);
+                service.CreateNewDatabase("UnitTestNewDatabase", 1, "Japanese_CI_AS", DatabaseEdition.Web, null);
 
             // Verify that the result matches the stuff in the thunk.
             Assert.AreEqual(result.CollationName, "Japanese_CI_AS", "The collation does not match");

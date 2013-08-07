@@ -190,7 +190,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Test.UnitTests.Database.
                 contextCmdlet.GetServerDataServiceByCertAuth("TestServer", subscriptionData);
             service.Channel = channel;
 
-            Database database = service.GetDatabase("testdb1");
+            Database database = service.GetDatabase("testdb1", null);
 
             Assert.AreEqual("testdb1", database.Name, "Expected db name to be testdb1");
 
@@ -254,7 +254,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Test.UnitTests.Database.
                 contextCmdlet.GetServerDataServiceByCertAuth("TestServer", subscriptionData);
             service.Channel = channel;
 
-            Database[] results = service.GetDatabases();
+            Database[] results = service.GetDatabases(null);
 
             // Expecting master, testdb1, testdb2
             Assert.AreEqual(2, results.Length, "Expecting two Database objects");

@@ -172,7 +172,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Test.UnitTests.Database.
                 contextCmdlet.GetServerDataServiceByCertAuth("TestServer", subscriptionData);
             service.Channel = channel;
 
-            service.RemoveDatabase("testdb1");
+            service.RemoveDatabase("testdb1", null);
         }
     }
 }

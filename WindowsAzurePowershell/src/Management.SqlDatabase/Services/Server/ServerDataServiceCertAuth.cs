@@ -15,6 +15,8 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
 {
     using System;
     using System.Collections.Generic;
+    using System.Globalization;
+    using System.Management.Automation;
     using System.Security.Cryptography.X509Certificates;
     using Microsoft.WindowsAzure.Management.Utilities.Common;
 
@@ -169,12 +171,28 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
         /// </summary>
         /// <param name="response">The response to turn into a <see cref="Database"/></param>
         /// <returns>a <see cref="Database"/> object.</returns>
-        private Database CreateDatabaseFromResponse(SqlDatabaseResponse response)
+        private Database CreateDatabaseFromResponse(SqlDatabaseResponse response, Cmdlet cmdlet)
         {
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.Name: {0}", response.Name));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.CollationName: {0}", response.CollationName));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.CreationDate: {0}", response.CreationDate));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.Edition: {0}", response.Edition));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.Id: {0}", response.Id));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.IsFederationRoot: {0}", response.IsFederationRoot));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.IsSystemObject: {0}", response.IsSystemObject));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.MaxSizeGB: {0}", response.MaxSizeGB));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.MaxSizeBytes: {0}", response.MaxSizeBytes));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.ServiceObjectiveAssignmentErrorCode: {0}", response.ServiceObjectiveAssignmentErrorCode));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.ServiceObjectiveAssignmentErrorDescription: {0}", response.ServiceObjectiveAssignmentErrorDescription));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.ServiceObjectiveAssignmentState: {0}", response.ServiceObjectiveAssignmentState));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.ServiceObjectiveAssignmentStateDescription: {0}", response.ServiceObjectiveAssignmentStateDescription));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.ServiceObjectiveAssignmentSuccessDate: {0}", response.ServiceObjectiveAssignmentSuccessDate));
+            cmdlet.WriteDebug(string.Format("CreateDatabaseFromResponse:response.ServiceObjectiveId: {0}", response.ServiceObjectiveId));
+
             Database result = new Database()
             {
                 CollationName = response.CollationName,
-                CreationDate = DateTime.Parse(response.CreationDate),
+                CreationDate = DateTime.Parse(response.CreationDate, CultureInfo.InvariantCulture),
                 Edition = response.Edition,
                 Id = int.Parse(response.Id),
                 IsFederationRoot = bool.Parse(response.IsFederationRoot),
@@ -203,7 +221,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
             }
             if (!string.IsNullOrEmpty(response.ServiceObjectiveAssignmentSuccessDate))
             {
-                result.ServiceObjectiveAssignmentSuccessDate = DateTime.Parse(response.ServiceObjectiveAssignmentSuccessDate);
+                result.ServiceObjectiveAssignmentSuccessDate = DateTime.Parse(response.ServiceObjectiveAssignmentSuccessDate, CultureInfo.InvariantCulture);
             }
             if (!string.IsNullOrEmpty(response.ServiceObjectiveId))
             {
@@ -223,7 +241,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
         /// Gets a list of all the databases in the current context.
         /// </summary>
         /// <returns>An array of databases in the current context</returns>
-        public Database[] GetDatabases()
+        public Database[] GetDatabases(Cmdlet cmdlet)
         {
             this.clientRequestId = SqlDatabaseManagementHelper.GenerateClientTracingId();
 
@@ -237,7 +255,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
             foreach (var db in databases)
             {
                 //Create the database from the response
-                results.Add(CreateDatabaseFromResponse(db));
+                results.Add(CreateDatabaseFromResponse(db, cmdlet));
             }
 
             return results.ToArray();
@@ -248,7 +266,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
         /// </summary>
         /// <param name="databaseName">The name of the database to retrieve</param>
         /// <returns>A database object</returns>
-        public Database GetDatabase(string databaseName)
+        public Database GetDatabase(string databaseName, Cmdlet cmdlet)
         {
             this.clientRequestId = SqlDatabaseManagementHelper.GenerateClientTracingId();
 
@@ -261,7 +279,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
                     channel.BeginGetDatabase(this.subscriptionId, this.ServerName, databaseName, null, null));
 
             //Create the database from the response
-            Database result = CreateDatabaseFromResponse(database);
+            Database result = CreateDatabaseFromResponse(database, cmdlet);
 
             //return the database
             return result;
@@ -279,7 +297,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
             string databaseName,
             int? databaseMaxSize,
             string databaseCollation,
-            DatabaseEdition databaseEdition)
+            DatabaseEdition databaseEdition, Cmdlet cmdlet)
         {
             this.clientRequestId = SqlDatabaseManagementHelper.GenerateClientTracingId();
 
@@ -310,7 +328,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
                 channel.EndNewDatabase(
                     channel.BeginNewDatabase(this.subscriptionId, this.serverName, input, null, null));
 
-            Database database = CreateDatabaseFromResponse(response);
+            Database database = CreateDatabaseFromResponse(response, cmdlet);
 
             return database;
         }
@@ -328,13 +346,13 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
             string newDatabaseName,
             int? databaseMaxSize,
             DatabaseEdition? databaseEdition, 
-            ServiceObjective serviceObjective)
+            ServiceObjective serviceObjective, Cmdlet cmdlet)
         {
             this.clientRequestId = SqlDatabaseManagementHelper.GenerateClientTracingId();
 
             ISqlDatabaseManagement channel = GetManagementChannel();
 
-            Database database = this.GetDatabase(databaseName);
+            Database database = this.GetDatabase(databaseName, cmdlet);
 
             //make sure the database exists.
             if (database == null)
@@ -395,7 +413,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
                     null));
 
             //Transform the response into a database object.
-            Database updatedDatabase = CreateDatabaseFromResponse(response);
+            Database updatedDatabase = CreateDatabaseFromResponse(response, cmdlet);
 
             return updatedDatabase;
         }
@@ -404,13 +422,13 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Services.Server
         /// Remove a database from a server
         /// </summary>
         /// <param name="databaseName">The name of the database to delete</param>
-        public void RemoveDatabase(string databaseName)
+        public void RemoveDatabase(string databaseName, Cmdlet cmdlet)
         {
             this.clientRequestId = SqlDatabaseManagementHelper.GenerateClientTracingId();
 
             ISqlDatabaseManagement channel = GetManagementChannel();
 
-            Database database = this.GetDatabase(databaseName);
+            Database database = this.GetDatabase(databaseName, cmdlet);
 
             SqlDatabaseInput input = new SqlDatabaseInput();
             input.Name = databaseName;

@@ -156,8 +156,8 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Database.Cmdlet
                 this.WriteObject(context.CreateNewDatabase(
                     this.DatabaseName, 
                     maxSizeGb, 
-                    this.Collation, 
-                    this.Edition));
+                    this.Collation,
+                    this.Edition, this));
             }
             catch (Exception ex)
             {
@@ -180,7 +180,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Database.Cmdlet
                     this.DatabaseName,
                     maxSizeGb,
                     this.Collation,
-                    this.Edition);
+                    this.Edition, this);
 
                 this.WriteObject(database, true);
             }

@@ -270,7 +270,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Database.Cmdlet
                     this.NewDatabaseName, 
                     maxSizeGb, 
                     edition,
-                    this.ServiceObjective);
+                    this.ServiceObjective, this);
                 
                 // If PassThru was specified, write back the updated object to the pipeline
                 if (this.PassThru.IsPresent)
@@ -308,7 +308,7 @@ namespace Microsoft.WindowsAzure.Management.SqlDatabase.Database.Cmdlet
                     this.NewDatabaseName,
                     maxSizeGb,
                     edition,
-                    this.ServiceObjective);
+                    this.ServiceObjective, this);
 
                 // If PassThru was specified, write back the updated object to the pipeline
                 if (this.PassThru.IsPresent)
